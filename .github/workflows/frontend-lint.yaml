@@ -27,4 +27,4 @@ jobs:
       - name: Setup project
         uses: ./.github/actions/setup-node
       - name: Run ${{ matrix.name }}
-        run: make ${{ matrix.check }}
+        run: ${{ inputs.cmd }} ${{ matrix.check }}
