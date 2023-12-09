@@ -11,13 +11,11 @@ runs:
   using: composite
   strategy:
     fail-fast: false
-    matrix:
-      include: ${{ inputs.checks }}
-  name: ${{ matrix.name }}
+  name: ${{ checks.name }}
   steps:
     - name: Checkout project
       uses: actions/checkout@v3
     - name: Setup project
       uses: ./.github/actions/setup-node
-    - name: Run ${{ matrix.name }}
-      run: make ${{ matrix.check }}
+    - name: Run ${{ checks.name }}
+      run: make ${{ checks.check }}
