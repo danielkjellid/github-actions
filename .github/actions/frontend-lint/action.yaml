@@ -12,8 +12,6 @@ inputs:
     required: true
 runs:
   using: composite
-  strategy:
-    fail-fast: false
   name: ${{ inputs.name }}
   steps:
     - name: Checkout project
