@@ -1,0 +1,20 @@
+on:
+  workflow_call:
+    inputs:
+      cmd:
+        required: false
+        type: string
+
+jobs:
+  frontend-lint:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+    name: eslint
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+      - name: Setup project
+        uses: ./.github/actions/setup-node
+      - name: Run eslint
+        run: ${{ inputs.cmd }}
