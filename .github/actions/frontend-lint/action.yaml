@@ -12,7 +12,6 @@ inputs:
   #   required: true
 runs:
   using: composite
-  name: Something
   steps:
     - name: Checkout project
       uses: actions/checkout@v3
