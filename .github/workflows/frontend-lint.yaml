@@ -1,0 +1,30 @@
+name: Run frontend tests
+description: Run frontend tests for project
+
+on:
+  workflow_call:
+    inputs:
+      matrix:
+        required: true
+        type: string
+        description: "Matrix to run, in the format [{name: 'Job', check: 'Command'}]"
+      cmd:
+        required: false
+        type: string
+        default: npm run
+
+jobs:
+  frontend-lint:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        includes: ${{ fromJSON(inputs.matrix) }}
+    name: ${{ matrix.name }}
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+      - name: Setup project
+        uses: ./.github/actions/setup-node
+      - name: Run ${{ matrix.name }}
+        run: make ${{ matrix.check }}
