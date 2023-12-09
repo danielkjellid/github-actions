@@ -18,4 +18,5 @@ runs:
     - name: Setup project
       uses: ./.github/actions/setup-node
     - name: Run Something
+      shell: bash
       run: ${{ inputs.cmd }}
