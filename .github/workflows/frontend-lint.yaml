@@ -1,28 +1,23 @@
-on:
-  workflow_call:
-    inputs:
-      matrix:
-        required: true
-        type: string
-        description: "Matrix to run, in the format [{name: 'Job', check: 'Command'}]"
-      cmd:
-        required: false
-        type: string
-        default: npm run
-
-jobs:
-  frontend-lint:
-    runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: false
-      matrix:
-        includes: ${{ fromJSON(inputs.matrix) }}
-    name: ${{ matrix.name }}
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@v3
-      - name: Setup project
-        uses: ./.github/actions/setup-node
-      - run: "echo ${{ fromJSON(inputs.matrix) }}"
-      - name: Run ${{ matrix.name }}
-        run: ${{ inputs.cmd }} ${{ matrix.check }}
+name: Frontend linters
+description: Run frontend linters
+inputs:
+  cmd:
+    description: Command to run the checks with
+    required: true
+  checks:
+    description: Checks to run as part of the matrix include. Uses the same format.
+    required: true
+runs:
+  using: composite
+  strategy:
+    fail-fast: false
+    matrix:
+      include: ${{ inputs.checks }}
+  name: ${{ matrix.name }}
+  steps:
+    - name: Checkout project
+      uses: actions/checkout@v3
+    - name: Setup project
+      uses: ./.github/actions/setup-node
+    - name: Run ${{ matrix.name }}
+      run: make ${{ matrix.check }}
