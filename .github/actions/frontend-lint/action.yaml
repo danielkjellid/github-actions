@@ -1,0 +1,23 @@
+name: Frontend linters
+description: Run frontend linters
+inputs:
+  cmd:
+    description: Command to run the checks with
+    required: true
+  checks:
+    description: Checks to run as part of the matrix include. Uses the same format.
+    required: true
+runs:
+  using: composite
+  strategy:
+    fail-fast: false
+    matrix:
+      include: ${{ inputs.checks }}
+  name: ${{ matrix.name }}
+  steps:
+    - name: Checkout project
+      uses: actions/checkout@v3
+    - name: Setup project
+      uses: ./.github/actions/setup-node
+    - name: Run ${{ matrix.name }}
+      run: make ${{ matrix.check }}
