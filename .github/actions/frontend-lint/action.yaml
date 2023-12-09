@@ -4,19 +4,19 @@ inputs:
   cmd:
     description: Command to run check with
     required: true
-  name:
-    description: Name of current check
-    required: true
-  check:
-    description: Check to run
-    required: true
+  # name:
+  #   description: Name of current check
+  #   required: true
+  # check:
+  #   description: Check to run
+  #   required: true
 runs:
   using: composite
-  name: ${{ inputs.name }}
+  name: Something
   steps:
     - name: Checkout project
       uses: actions/checkout@v3
     - name: Setup project
       uses: ./.github/actions/setup-node
-    - name: Run ${{ inputs.name }}
-      run: ${{ inputs.cmd }} ${{ inputs.check }}
+    - name: Run Something
+      run: ${{ inputs.cmd }}
