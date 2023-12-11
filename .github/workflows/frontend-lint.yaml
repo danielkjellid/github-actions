@@ -2,15 +2,7 @@ on:
   workflow_call:
     inputs:
       cmd:
-        description: Command to run check with
-        required: true
-        type: string
-      name:
-        description: Name of current check
-        required: true
-        type: string
-      check:
-        description: Check to run
+        description: Command to run check linter
         required: true
         type: string
 
@@ -22,6 +14,6 @@ jobs:
         uses: actions/checkout@v3
       - name: Setup project
         uses: ./.github/actions/setup-node
-      - name: Run ${{ inputs.name }}
+      - name: Running ${{ inputs.cmd }}
         shell: bash
-        run: ${{ inputs.cmd }} ${{ inputs.check }}
+        run: ${{ inputs.cmd }}
