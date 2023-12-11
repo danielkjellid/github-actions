@@ -26,7 +26,7 @@ jobs:
       postgres:
         # Postgres will not create service if docker image is empty. If is not currently supported
         # for services: https://github.com/actions/runner/issues/822
-        image: ${{ (inputs.add-postgres) && "postgres:14" || "" }}
+        image: ${{ (inputs.postgres-db != '') && 'postgres:14' || '' }}
         ports:
           - 5432/tcp
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -44,7 +44,7 @@ jobs:
         shell: bash
         run: ${{ inputs.cmd }}
         env:
-          DATABASE_URL: postgresql://${{ inputs.postgres-user }}:${{ inputs.postgres-password }}@localhost:${{ job.services.postgres.ports[5432] }}/${{ inputs.postgres-db }}
+          DATABASE_URL: ${{ inputs.postgres-db != '' && format('postgresql://{0}}:{1}@localhost:${{ job.services.postgres.ports[5432] }}/{2}', inputs.postgres-user, inputs.postgres-password, inputs.postgres-db) || ''}}
           # PostgreSQL's configuration, used by psql
           PGHOST: localhost
           PGUSER: ${{ inputs.postgres-user }}
