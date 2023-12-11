@@ -7,7 +7,7 @@ on:
         type: string
 
 jobs:
-  frontend-lint:
+  linter:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout project
