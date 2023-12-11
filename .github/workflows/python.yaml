@@ -24,8 +24,9 @@ jobs:
   action:
     services:
       postgres:
-        if: ${{ inputs.add-postgres }}
-        image: postgres:14
+        # Postgres will not create service if docker image is empty. If is not currently supported
+        # for services: https://github.com/actions/runner/issues/822
+        image: ${{ (inputs.add-postgres) && postgres:14 || "" }}
         ports:
           - 5432/tcp
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
