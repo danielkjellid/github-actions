@@ -1,6 +1,20 @@
 on:
   workflow_call:
     inputs:
+      add-postgres:
+        description: Add a postgres instance to action
+        required: false
+        default: false
+        type: boolean
+      postgres-db:
+        required: false
+        type: string
+      postgres-user:
+        required: false
+        type: string
+      postgres-password:
+        required: false
+        type: string
       cmd:
         description: Command to run action with
         required: true
@@ -8,6 +22,17 @@ on:
 
 jobs:
   action:
+    services:
+      postgres:
+        if: ${{ inputs.add-postgres }}
+        image: postgres:14
+        ports:
+          - 5432/tcp
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        env:
+          POSTGRES_DB: ${{ inputs.postgres-db }}
+          POSTGRES_USER: ${{ inputs.postgres-user }}
+          POSTGRES_PASSWORD: ${{ inputs.postgres-password }}
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout project
@@ -17,3 +42,11 @@ jobs:
       - name: Running ${{ inputs.cmd }}
         shell: bash
         run: ${{ inputs.cmd }}
+        env:
+          DATABASE_URL: postgresql://${{ inputs.postgres-user }}:${{ inputs.postgres-password }}@localhost:${{ job.services.postgres.ports[5432] }}/${{ inputs.postgres-db }}
+          # PostgreSQL's configuration, used by psql
+          PGHOST: localhost
+          PGUSER: ${{ inputs.postgres-user }}
+          PGPASSWORD: ${{ inputs.postgres-password }}
+          PGDATABASE: ${{ inputs.postgres-db }}
+          PGPORT: ${{ job.services.postgres.ports[5432] }}
