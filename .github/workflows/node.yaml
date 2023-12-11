@@ -2,12 +2,12 @@ on:
   workflow_call:
     inputs:
       cmd:
-        description: Command to run check with
+        description: Command to run action with
         required: true
         type: string
 
 jobs:
-  lint:
+  action:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout project
