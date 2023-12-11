@@ -15,7 +15,8 @@ on:
         type: string
 
 jobs:
-  frontend-lint:
+  - job: frontend-lint-${{ inputs.name }}
+    displayName: ${{ inputs.name }}
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout project
