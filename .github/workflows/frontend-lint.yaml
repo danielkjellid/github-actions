@@ -1,0 +1,19 @@
+on:
+  workflow_call:
+    inputs:
+      cmd:
+        description: Command to run check with
+        required: true
+        type: string
+
+jobs:
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+      - name: Setup project
+        uses: ./.github/actions/setup-node
+      - name: Running ${{ inputs.cmd }}
+        shell: bash
+        run: ${{ inputs.cmd }}
