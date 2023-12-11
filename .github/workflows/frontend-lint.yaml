@@ -1,23 +1,26 @@
-name: Frontend linters
-description: Run frontend linters
-inputs:
-  cmd:
-    description: Command to run the checks with
-    required: true
-  checks:
-    description: Checks to run as part of the matrix include. Uses the same format.
-    required: true
-runs:
-  using: composite
-  strategy:
-    fail-fast: false
-    matrix:
-      include: ${{ inputs.checks }}
-  name: ${{ matrix.name }}
+on:
+  workflow_call:
+    inputs:
+      cmd:
+        description: Command to run check with
+        required: true
+        type: string
+      name:
+        description: Name of current check
+        required: true
+        type: string
+      check:
+        description: Check to run
+        required: true
+        type: string
+
+jobs:
+  runs-on: ubuntu-20.04
   steps:
     - name: Checkout project
       uses: actions/checkout@v3
     - name: Setup project
       uses: ./.github/actions/setup-node
-    - name: Run ${{ matrix.name }}
-      run: make ${{ matrix.check }}
+    - name: Run ${{ inputs.name }}
+      shell: bash
+      run: ${{ inputs.cmd }} ${{ inputs.check }}
