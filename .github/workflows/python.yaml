@@ -48,7 +48,7 @@ jobs:
             ${{ 
               inputs.postgres-db != '' && 
               format(
-                  'postgresql://{0}}:{1}@localhost:{2}/{3}', 
+                  'postgresql://{0}:{1}@localhost:{2}/{3}', 
                   inputs.postgres-user, 
                   inputs.postgres-password, 
                   job.services.postgres.ports[5432], 
