@@ -15,6 +15,15 @@ on:
       postgres-password:
         required: false
         type: string
+      minio-bucket:
+        required: false
+        type: string
+      minio-user:
+        required: false
+        type: string
+      minio-password:
+        required: false
+        type: string
       cmd:
         description: Command to run action with
         required: true
@@ -34,6 +43,20 @@ jobs:
           POSTGRES_DB: ${{ inputs.postgres-db }}
           POSTGRES_USER: ${{ inputs.postgres-user }}
           POSTGRES_PASSWORD: ${{ inputs.postgres-password }}
+      # Minio will not create service if docker image is empty. If is not currently supported
+      # for services: https://github.com/actions/runner/issues/822
+      minio:
+        image: ${{ (inputs.minio-user != '') && 'bitnami/minio:latest' || '' }}
+        ports:
+          - "9000:9000"
+          - "9001:9001"
+        volumes:
+          - "minio_data:/data"
+        env:
+          MINIO_ROOT_USER: ${{ inputs.minio-user }}
+          MINIO_ROOT_PASSWORD: ${{ inputs.minio-password }}
+          MINIO_DEFAULT_BUCKETS: ${{ inputs.minio-bucket }}
+          CONSOLE_SECURE_TLS_REDIRECT: off
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout project
