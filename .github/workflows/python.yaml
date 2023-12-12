@@ -44,7 +44,18 @@ jobs:
         shell: bash
         run: ${{ inputs.cmd }}
         env:
-          DATABASE_URL: ${{ inputs.postgres-db != '' && format('postgresql://{0}}:{1}@localhost:${{ job.services.postgres.ports[5432] }}/{2}', inputs.postgres-user, inputs.postgres-password, inputs.postgres-db) || ''}}
+          DATABASE_URL: |
+            ${{ 
+              inputs.postgres-db != '' && 
+              format(
+                  'postgresql://{0}}:{1}@localhost:{2}/{3}', 
+                  inputs.postgres-user, 
+                  inputs.postgres-password, 
+                  job.services.postgres.ports[5432], 
+                  inputs.postgres-db
+              ) || 
+              ''
+            }}
           # PostgreSQL's configuration, used by psql
           PGHOST: localhost
           PGUSER: ${{ inputs.postgres-user }}
