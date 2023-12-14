@@ -94,4 +94,4 @@ jobs:
           PGPASSWORD: ${{ inputs.postgres-password }}
           PGDATABASE: ${{ inputs.postgres-db }}
           PGPORT: ${{ job.services.postgres.ports[5432] }}
-          CACHE_URL: ${{ (inputs.use-redis) && 'redis://localhost:6379/' || null }}
+          CACHE_URL: "redis://localhost:6379/"
