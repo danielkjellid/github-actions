@@ -6,7 +6,6 @@ on:
         required: true
     secrets:
       deployEndpoint:
-        type: string
         required: true
 
 jobs:
