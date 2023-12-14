@@ -21,13 +21,12 @@ runs:
       id: get-poetry-version
       shell: bash
       run: |
-        version=echo $(poetry lock --version | egrep -o '[0-9.]+')
+        version=echo $(head -n 1 'poetry.lock' | egrep -o '([0-9]{1,}\.)+[0-9]{1,}')
 
     - name: Install poetry
       id: install-poetry
       shell: bash
       run: |
-        echo ${{ steps.get-poetry-version.outputs.version }}
         pip install poetry==${{ steps.get-poetry-version.outputs.version }}
 
     - name: Cache python venv
