@@ -62,7 +62,7 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v3
       - name: Setup project
-        uses: danielkjellid/github-actions/.github/actions/setup-python
+        uses: danielkjellid/github-actions/.github/actions/setup-python@main
       - name: Running ${{ inputs.cmd }}
         shell: bash
         run: ${{ inputs.cmd }}
