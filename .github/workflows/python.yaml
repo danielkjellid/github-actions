@@ -27,6 +27,7 @@ on:
       use-redis:
         required: false
         type: boolean
+        default: false
       cmd:
         description: Command to run action with
         required: true
@@ -61,7 +62,7 @@ jobs:
           MINIO_DEFAULT_BUCKETS: ${{ inputs.minio-bucket }}
           CONSOLE_SECURE_TLS_REDIRECT: off
       redis:
-        image: ${{ (inputs.use-redis != '') && 'redis' || '' }}
+        image: ${{ (inputs.use-redis) && 'redis' || '' }}
         ports:
           - 6379:6379
         options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
@@ -93,4 +94,4 @@ jobs:
           PGPASSWORD: ${{ inputs.postgres-password }}
           PGDATABASE: ${{ inputs.postgres-db }}
           PGPORT: ${{ job.services.postgres.ports[5432] }}
-          CACHE_URL: ${{ (inputs.use-redis != '') && 'redis://localhost:6379/' || '' }}
+          CACHE_URL: ${{ (inputs.use-redis) && 'redis://localhost:6379/' || '' }}
