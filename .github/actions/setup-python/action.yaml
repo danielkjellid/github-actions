@@ -21,7 +21,7 @@ runs:
       id: get-poetry-version
       shell: bash
       run: |
-        version=$(poetry lock --version | egrep -o '[0-9.]+')
+        version=echo $(poetry lock --version | egrep -o '[0-9.]+')
 
     - name: Install poetry
       id: install-poetry
