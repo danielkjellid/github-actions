@@ -24,6 +24,9 @@ on:
       minio-password:
         required: false
         type: string
+      use-redis:
+        required: false
+        type: boolean
       cmd:
         description: Command to run action with
         required: true
@@ -57,6 +60,11 @@ jobs:
           MINIO_ROOT_PASSWORD: ${{ inputs.minio-password }}
           MINIO_DEFAULT_BUCKETS: ${{ inputs.minio-bucket }}
           CONSOLE_SECURE_TLS_REDIRECT: off
+      redis:
+        image: ${{ (inputs.use-redis != '') && 'redis' || '' }}
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout project
@@ -85,3 +93,4 @@ jobs:
           PGPASSWORD: ${{ inputs.postgres-password }}
           PGDATABASE: ${{ inputs.postgres-db }}
           PGPORT: ${{ job.services.postgres.ports[5432] }}
+          CACHE_URL: ${{ (inputs.use-redis != '') && 'redis://localhost:6379/' || '' }}
