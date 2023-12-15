@@ -23,7 +23,7 @@ runs:
       shell: bash
       run: >
         echo "POETRY_VERSION=$(
-          head -n 1 'poetry.lock' | 
+          head -n 1 'poetry.lock' |
           egrep -o '([0-9]{1,}\.)+[0-9]{1,}
         )" >> $GITHUB_ENV
 
@@ -40,7 +40,7 @@ runs:
         path: .venv
         key: >
           venv-${{ runner.os }}-${{ hashFiles(
-            '.python-version', 
+            '.python-version',
             'poetry.lock'
           ) }}
 
