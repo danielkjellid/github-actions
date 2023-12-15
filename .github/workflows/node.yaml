@@ -13,7 +13,7 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v3
       - name: Setup project
-        uses: ./.github/actions/setup-node
+        uses: danielkjellid/github-actions/.github/actions/setup-node@local-actions
       - name: Running ${{ inputs.cmd }}
         shell: bash
         run: ${{ inputs.cmd }}

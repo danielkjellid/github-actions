@@ -1,0 +1,30 @@
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+    secrets:
+      deployEndpoint:
+        required: true
+
+jobs:
+  action:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+      - name: Wait for CI
+        uses: lewagon/wait-on-check-action@v1.2.0
+        with:
+          ref: ${{ github.ref }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+          running-workflow-name: "Deploy"
+          check-regexp: "(CI done|tests)"
+          allowed-conclusions: success
+      - name: Deploying to ${{ inputs.environment }}
+        env:
+          RENDER_DEPLOY_ENDPOINT: ${{ secrets.deployEndpoint }}
+        run: |
+          curl -X POST -d {} $RENDER_DEPLOY_ENDPOINT
