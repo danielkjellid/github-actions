@@ -1,5 +1,5 @@
 ---
-on:
+on: # yamllint disable-line rule:truthy
   workflow_call:
     inputs:
       add-postgres:
@@ -38,18 +38,24 @@ jobs:
   action:
     services:
       postgres:
-        # Postgres will not create service if docker image is empty. If is not currently supported
-        # for services: https://github.com/actions/runner/issues/822
+        # Postgres will not create service if docker image is empty.
+        # If is not currently supported for services:
+        # https://github.com/actions/runner/issues/822
         image: ${{ (inputs.postgres-db != '') && 'postgres:14' || '' }}
         ports:
           - 5432/tcp
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        options: >
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         env:
           POSTGRES_DB: ${{ inputs.postgres-db }}
           POSTGRES_USER: ${{ inputs.postgres-user }}
           POSTGRES_PASSWORD: ${{ inputs.postgres-password }}
-      # Minio will not create service if docker image is empty. If is not currently supported
-      # for services: https://github.com/actions/runner/issues/822
+      # Minio will not create service if docker image is empty.
+      # If is not currently supported for services:
+      # https://github.com/actions/runner/issues/822
       minio:
         image: ${{ (inputs.minio-user != '') && 'bitnami/minio:latest' || '' }}
         ports:
@@ -66,7 +72,11 @@ jobs:
         image: ${{ (inputs.use-redis) && 'redis' || '' }}
         ports:
           - 6379:6379
-        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+        options: >
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout project
