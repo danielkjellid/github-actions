@@ -1,3 +1,4 @@
+---
 name: Setup node project
 description: Setup node project and install dependencies
 
@@ -8,9 +9,9 @@ runs:
       id: setup-node
       uses: actions/setup-node@v3
       with:
-        node-version-file: '.nvmrc'
-        cache: 'npm'
-        cache-dependency-path: 'package-lock.json'
+        node-version-file: ".nvmrc"
+        cache: "npm"
+        cache-dependency-path: "package-lock.json"
 
     - name: Cache node modules
       id: cache-node-modules

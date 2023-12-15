@@ -1,0 +1,15 @@
+---
+name: CI
+
+on: push # yamllint disable-line rule:truthy
+
+jobs:
+  yaml-lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+      - name: lint yaml
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          config_data: "{extends: default, rules: {comments: disable}}"
