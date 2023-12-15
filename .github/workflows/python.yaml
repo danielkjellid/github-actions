@@ -67,7 +67,7 @@ jobs:
           MINIO_ROOT_USER: ${{ inputs.minio-user }}
           MINIO_ROOT_PASSWORD: ${{ inputs.minio-password }}
           MINIO_DEFAULT_BUCKETS: ${{ inputs.minio-bucket }}
-          CONSOLE_SECURE_TLS_REDIRECT: off
+          CONSOLE_SECURE_TLS_REDIRECT: false
       redis:
         image: ${{ (inputs.use-redis) && 'redis' || '' }}
         ports:
@@ -88,13 +88,13 @@ jobs:
         run: ${{ inputs.cmd }}
         env:
           DATABASE_URL: |
-            ${{ 
-              inputs.postgres-db != '' && 
+            ${{
+              inputs.postgres-db != '' &&
               format(
-                  'postgresql://{0}:{1}@localhost:{2}/{3}', 
-                  inputs.postgres-user, 
-                  inputs.postgres-password, 
-                  job.services.postgres.ports[5432], 
+                  'postgresql://{0}:{1}@localhost:{2}/{3}',
+                  inputs.postgres-user,
+                  inputs.postgres-password,
+                  job.services.postgres.ports[5432],
                   inputs.postgres-db
               ) || 
               ''
