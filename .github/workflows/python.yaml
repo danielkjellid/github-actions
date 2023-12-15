@@ -96,7 +96,7 @@ jobs:
                   inputs.postgres-password,
                   job.services.postgres.ports[5432],
                   inputs.postgres-db
-              ) || 
+              ) ||
               ''
             }}
           # PostgreSQL's configuration, used by psql
