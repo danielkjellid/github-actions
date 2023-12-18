@@ -44,11 +44,7 @@ jobs:
         image: ${{ (inputs.postgres-db != '') && 'postgres:14' || '' }}
         ports:
           - 5432/tcp
-        options: |-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5 # yamllint disable-line
         env:
           POSTGRES_DB: ${{ inputs.postgres-db }}
           POSTGRES_USER: ${{ inputs.postgres-user }}
@@ -72,11 +68,7 @@ jobs:
         image: ${{ (inputs.use-redis) && 'redis' || '' }}
         ports:
           - 6379:6379
-        options: |-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5 # yamllint disable-line
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout project
