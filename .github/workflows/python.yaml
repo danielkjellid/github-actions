@@ -44,7 +44,7 @@ jobs:
         image: ${{ (inputs.postgres-db != '') && 'postgres:14' || '' }}
         ports:
           - 5432/tcp
-        options: >
+        options: |
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
