@@ -1,0 +1,40 @@
+---
+on:
+  workflow_call:
+    inputs:
+      check-regexp:
+        type: string
+        required: false
+        default: "(CI done|tests)"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  action:
+    runs-on: ubuntu-20.04
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+      - name: Wait for CI
+        uses: lewagon/wait-on-check-action@v1.2.0
+        with:
+          ref: ${{ github.ref }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+          running-workflow-name: "Dependabot merge"
+          check-regexp: ${{ inputs.check-regexp }}
+          allowed-conclusions: success
+      - name: Get dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Enable auto-merge for Dependabot PRs
+        if: steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        run: gh pr merge --auto --merge "$PR_URL"
