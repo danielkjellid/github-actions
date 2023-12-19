@@ -12,17 +12,6 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.actor == 'dependabot[bot]'
     steps:
-      - name: Checkout project
-        uses: actions/checkout@v3
-      - name: Wait for CI
-        uses: lewagon/wait-on-check-action@v1.3.1
-        with:
-          ref: ${{ github.ref }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10
-          running-workflow-name: "Dependabot merge"
-          check-regexp: ${{ inputs.check-regexp }}
-          allowed-conclusions: success
       - name: Get dependabot metadata
         id: metadata
         uses: dependabot/fetch-metadata@v1

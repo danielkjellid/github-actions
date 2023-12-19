@@ -5,6 +5,9 @@ on: # yamllint disable-line rule:truthy
       environment:
         type: string
         required: true
+      ref:
+        type: string
+        required: true
     secrets:
       deployEndpoint:
         required: true
@@ -18,7 +21,7 @@ jobs:
       - name: Wait for CI
         uses: lewagon/wait-on-check-action@v1.3.1
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ inputs.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
           running-workflow-name: "Deploy"
