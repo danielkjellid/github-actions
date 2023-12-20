@@ -25,7 +25,7 @@ jobs:
           ref: ${{ github.sha }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
-          running-workflow-name: "Deploy"
+          running-workflow-name: "automerge"
           check-regexp: "(CI done|tests)"
           allowed-conclusions: success
       - name: Testing
