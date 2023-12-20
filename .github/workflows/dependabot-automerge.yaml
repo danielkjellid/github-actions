@@ -2,6 +2,9 @@
 on:
   workflow_call:
     inputs:
+      name:
+        type: string
+        required: true
       check-regexp:
         type: string
         required: false
@@ -10,10 +13,8 @@ on:
 jobs:
   action:
     runs-on: ubuntu-20.04
-    # if: github.actor == 'dependabot[bot]'
+    if: github.actor == 'dependabot[bot]'
     steps:
-      - name: Testing
-        run: echo ${{ inputs.ref }}
       - name: Checkout project
         uses: actions/checkout@v3
       - name: Wait for CI
@@ -22,19 +23,17 @@ jobs:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
-          running-workflow-name: "automerge"
+          running-workflow-name: ${{ inputs.name }}
           check-regexp: "(CI done|tests)"
           allowed-conclusions: success
-      - name: Testing
-        run: echo 'Done!'
-      # - name: Get dependabot metadata
-      #   id: metadata
-      #   uses: dependabot/fetch-metadata@v1
-      #   with:
-      #     github-token: "${{ secrets.GITHUB_TOKEN }}"
-      # - name: Enable auto-merge for Dependabot PRs
-      #   if: steps.metadata.outputs.update-type == 'version-update:semver-patch'
-      #   env:
-      #     PR_URL: ${{github.event.pull_request.html_url}}
-      #     GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      #   run: gh pr merge --auto --squash "$PR_URL"
+      - name: Get dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Enable auto-merge for Dependabot PRs
+        if: steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        run: gh pr merge --auto --squash "$PR_URL"
