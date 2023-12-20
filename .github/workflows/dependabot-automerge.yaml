@@ -23,7 +23,7 @@ jobs:
           ref: ${{ github.ref }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
-          running-workflow-name: ${{ inputs.name }}
+          running-workflow-name: automerge
           check-regexp: "(CI done|tests)"
           allowed-conclusions: success
       - name: Get dependabot metadata
