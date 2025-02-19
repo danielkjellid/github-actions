@@ -6,8 +6,8 @@ runs:
   using: composite
   steps:
     - name: Setup python
-        id: setup-python
-        uses: actions/setup-python@v4
+      id: setup-python
+      uses: actions/setup-python@v4
 
     - name: Cache pip downloads
       id: cache-pip-downloads
