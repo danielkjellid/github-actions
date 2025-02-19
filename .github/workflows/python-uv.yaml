@@ -33,41 +33,6 @@ on: # yamllint disable-line rule:truthy
         description: Command to run action with
         required: true
         type: string
----
-on: # yamllint disable-line rule:truthy
-  workflow_call:
-    inputs:
-      add-postgres:
-        description: Add a postgres instance to action
-        required: false
-        default: false
-        type: boolean
-      postgres-db:
-        required: false
-        type: string
-      postgres-user:
-        required: false
-        type: string
-      postgres-password:
-        required: false
-        type: string
-      minio-bucket:
-        required: false
-        type: string
-      minio-user:
-        required: false
-        type: string
-      minio-password:
-        required: false
-        type: string
-      use-redis:
-        required: false
-        type: boolean
-        default: false
-      cmd:
-        description: Command to run action with
-        required: true
-        type: string
 
 jobs:
   action:
