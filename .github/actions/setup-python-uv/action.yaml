@@ -18,19 +18,10 @@ runs:
         restore-keys: |
           pip-${{ runner.os }}-
 
-    - name: Get uv version
-      id: get-uv-version
-      shell: bash
-      run: >
-        echo "UV_VERSION=$(
-          head -n 1 'uv.lock' |
-          egrep -o '([0-9]+(\.[0-9]+)*)'
-        )" >> $GITHUB_ENV
-
     - name: Install uv
       id: install-uv
       shell: bash
-      run: pip install uv==${{ env.UV_VERSION }}
+      run: pip install uv
 
     - name: Cache python venv
       id: cache-python-venv
