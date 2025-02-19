@@ -1,0 +1,135 @@
+---
+on: # yamllint disable-line rule:truthy
+  workflow_call:
+    inputs:
+      add-postgres:
+        description: Add a postgres instance to action
+        required: false
+        default: false
+        type: boolean
+      postgres-db:
+        required: false
+        type: string
+      postgres-user:
+        required: false
+        type: string
+      postgres-password:
+        required: false
+        type: string
+      minio-bucket:
+        required: false
+        type: string
+      minio-user:
+        required: false
+        type: string
+      minio-password:
+        required: false
+        type: string
+      use-redis:
+        required: false
+        type: boolean
+        default: false
+      cmd:
+        description: Command to run action with
+        required: true
+        type: string
+---
+on: # yamllint disable-line rule:truthy
+  workflow_call:
+    inputs:
+      add-postgres:
+        description: Add a postgres instance to action
+        required: false
+        default: false
+        type: boolean
+      postgres-db:
+        required: false
+        type: string
+      postgres-user:
+        required: false
+        type: string
+      postgres-password:
+        required: false
+        type: string
+      minio-bucket:
+        required: false
+        type: string
+      minio-user:
+        required: false
+        type: string
+      minio-password:
+        required: false
+        type: string
+      use-redis:
+        required: false
+        type: boolean
+        default: false
+      cmd:
+        description: Command to run action with
+        required: true
+        type: string
+
+jobs:
+  action:
+    services:
+      postgres:
+        # Postgres will not create service if docker image is empty.
+        # If is not currently supported for services:
+        # https://github.com/actions/runner/issues/822
+        image: ${{ (inputs.postgres-db != '') && 'postgres:14' || '' }}
+        ports:
+          - 5432/tcp
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5 # yamllint disable-line
+        env:
+          POSTGRES_DB: ${{ inputs.postgres-db }}
+          POSTGRES_USER: ${{ inputs.postgres-user }}
+          POSTGRES_PASSWORD: ${{ inputs.postgres-password }}
+      # Minio will not create service if docker image is empty.
+      # If is not currently supported for services:
+      # https://github.com/actions/runner/issues/822
+      minio:
+        image: ${{ (inputs.minio-user != '') && 'bitnami/minio:latest' || '' }}
+        ports:
+          - "9000:9000"
+          - "9001:9001"
+        volumes:
+          - "minio_data:/data"
+        env:
+          MINIO_ROOT_USER: ${{ inputs.minio-user }}
+          MINIO_ROOT_PASSWORD: ${{ inputs.minio-password }}
+          MINIO_DEFAULT_BUCKETS: ${{ inputs.minio-bucket }}
+          CONSOLE_SECURE_TLS_REDIRECT: false
+      redis:
+        image: ${{ (inputs.use-redis) && 'redis' || '' }}
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5 # yamllint disable-line
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+      - name: Setup project
+        uses: danielkjellid/github-actions/.github/actions/setup-python-uv@main
+      - name: Running ${{ inputs.cmd }}
+        shell: bash
+        run: ${{ inputs.cmd }}
+        env:
+          DATABASE_URL: |
+            ${{
+              inputs.postgres-db != '' &&
+              format(
+                  'postgresql://{0}:{1}@localhost:{2}/{3}',
+                  inputs.postgres-user,
+                  inputs.postgres-password,
+                  job.services.postgres.ports[5432],
+                  inputs.postgres-db
+              ) ||
+              ''
+            }}
+          # PostgreSQL's configuration, used by psql
+          PGHOST: localhost
+          PGUSER: ${{ inputs.postgres-user }}
+          PGPASSWORD: ${{ inputs.postgres-password }}
+          PGDATABASE: ${{ inputs.postgres-db }}
+          PGPORT: ${{ job.services.postgres.ports[5432] }}
+          CACHE_URL: "redis://localhost:6379/"
