@@ -69,7 +69,7 @@ jobs:
         ports:
           - 6379:6379
         options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5 # yamllint disable-line
-    runs-on: ubuntu:latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout project
         uses: actions/checkout@v3
