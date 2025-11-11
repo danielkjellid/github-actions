@@ -10,9 +10,6 @@ inputs:
 
 runs:
   using: composite
-  defaults:
-    run:
-      working-directory: ${{ inputs.working-directory || '.' }}
   steps:
     - name: Setup python
       id: setup-python
@@ -53,6 +50,7 @@ runs:
     - name: Get poetry version
       id: get-poetry-version
       shell: bash
+      working-directory: ${{ inputs.working-directory || '.' }}
       run: >
         echo "POETRY_VERSION=$(
           head -n 1 '${{ steps.set-paths.outputs.poetry_lock_path }}' |
@@ -62,6 +60,7 @@ runs:
     - name: Install poetry
       id: install-poetry
       shell: bash
+      working-directory: ${{ inputs.working-directory || '.' }}
       run: |
         pip install poetry==${{ env.POETRY_VERSION }}
 
@@ -79,5 +78,6 @@ runs:
     - name: Install python dependencies
       id: install-python-dependencies
       shell: bash
+      working-directory: ${{ inputs.working-directory || '.' }}
       run: poetry install
       if: steps.cache-python-venv.outputs.cache-hit != 'true'
