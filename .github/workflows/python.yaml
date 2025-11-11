@@ -77,9 +77,8 @@ jobs:
     steps:
       - name: Checkout project
         uses: actions/checkout@v3
-      # yamllint disable-line rule:line-length
       - name: Setup project
-        uses: danielkjellid/github-actions/.github/actions/setup-python@main
+        uses: ./.github/actions/setup-python
         with:
           working-directory: ${{ inputs.working-directory }}
       - name: Running ${{ inputs.cmd }}
