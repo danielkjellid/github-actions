@@ -12,7 +12,7 @@ runs:
   using: composite
   defaults:
     run:
-      working-directory: ${{ inputs.working-directory }}
+      working-directory: ${{ inputs.working-directory || '.' }}
   steps:
     - name: Setup python
       id: setup-python
@@ -23,7 +23,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: ~/.cache/pip
-        key: pip-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+        key: pip-${{ runner.os }}-${{ hashFiles(inputs.working-directory && format('{0}/uv.lock', inputs.working-directory) || 'uv.lock') }}
         restore-keys: |
           pip-${{ runner.os }}-
 
@@ -36,11 +36,11 @@ runs:
       id: cache-python-venv
       uses: actions/cache@v3
       with:
-        path: .venv
+        path: ${{ inputs.working-directory && format('{0}/.venv', inputs.working-directory) || '.venv' }}
         key: >
           venv-${{ runner.os }}-${{ hashFiles(
-            '.python-version',
-            'uv.lock'
+            inputs.working-directory && format('{0}/.python-version', inputs.working-directory) || '.python-version',
+            inputs.working-directory && format('{0}/uv.lock', inputs.working-directory) || 'uv.lock'
           ) }}
 
     - name: Install python dependencies
