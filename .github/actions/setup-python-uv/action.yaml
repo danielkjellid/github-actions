@@ -11,10 +11,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Setup python
-      id: setup-python
-      uses: actions/setup-python@v4
-
     - name: Set file paths
       id: set-paths
       shell: bash
@@ -34,6 +30,12 @@ runs:
           echo "python_version_path=.python-version" >> $GITHUB_OUTPUT
           echo "venv_path=.venv" >> $GITHUB_OUTPUT
         fi
+
+    - name: Setup python
+      id: setup-python
+      uses: actions/setup-python@v4
+      with:
+        python-version-file: ${{ steps.set-paths.outputs.python_version_path }}
 
     - name: Cache pip downloads
       id: cache-pip-downloads
