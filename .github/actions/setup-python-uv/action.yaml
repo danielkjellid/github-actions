@@ -23,9 +23,12 @@ runs:
       shell: bash
       run: |
         if [ -n "${{ inputs.working-directory }}" ]; then
-          echo "uv_lock_path=${{ inputs.working-directory }}/uv.lock" >> $GITHUB_OUTPUT
-          echo "python_version_path=${{ inputs.working-directory }}/.python-version" >> $GITHUB_OUTPUT
-          echo "venv_path=${{ inputs.working-directory }}/.venv" >> $GITHUB_OUTPUT
+          echo "uv_lock_path=${{ inputs.working-directory }}/uv.lock" \
+            >> $GITHUB_OUTPUT
+          echo "python_version_path=${{ inputs.working-directory }}/.python-version" \
+            >> $GITHUB_OUTPUT
+          echo "venv_path=${{ inputs.working-directory }}/.venv" \
+            >> $GITHUB_OUTPUT
         else
           echo "uv_lock_path=uv.lock" >> $GITHUB_OUTPUT
           echo "python_version_path=.python-version" >> $GITHUB_OUTPUT
@@ -37,7 +40,10 @@ runs:
       uses: actions/cache@v3
       with:
         path: ~/.cache/pip
-        key: pip-${{ runner.os }}-${{ hashFiles(steps.set-paths.outputs.uv_lock_path) }}
+        key: >
+          pip-${{ runner.os }}-${{ hashFiles(
+            steps.set-paths.outputs.uv_lock_path
+          ) }}
         restore-keys: |
           pip-${{ runner.os }}-
 

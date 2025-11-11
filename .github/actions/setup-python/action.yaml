@@ -12,18 +12,38 @@ runs:
   using: composite
   defaults:
     run:
-      working-directory: ${{ inputs.working-directory }}
+      working-directory: ${{ inputs.working-directory || '.' }}
   steps:
     - name: Setup python
       id: setup-python
       uses: actions/setup-python@v4
+
+    - name: Set file paths
+      id: set-paths
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.working-directory }}" ]; then
+          echo "poetry_lock_path=${{ inputs.working-directory }}/poetry.lock" \
+            >> $GITHUB_OUTPUT
+          echo "python_version_path=${{ inputs.working-directory }}/.python-version" \
+            >> $GITHUB_OUTPUT
+          echo "venv_path=${{ inputs.working-directory }}/.venv" \
+            >> $GITHUB_OUTPUT
+        else
+          echo "poetry_lock_path=poetry.lock" >> $GITHUB_OUTPUT
+          echo "python_version_path=.python-version" >> $GITHUB_OUTPUT
+          echo "venv_path=.venv" >> $GITHUB_OUTPUT
+        fi
 
     - name: Cache pip downloads
       id: cache-pip-downloads
       uses: actions/cache@v3
       with:
         path: ~/.cache/pip
-        key: pip-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+        key: >
+          pip-${{ runner.os }}-${{ hashFiles(
+            steps.set-paths.outputs.poetry_lock_path
+          ) }}
         restore-keys: |
           pip-${{ runner.os }}-
 
@@ -32,7 +52,7 @@ runs:
       shell: bash
       run: >
         echo "POETRY_VERSION=$(
-          head -n 1 'poetry.lock' |
+          head -n 1 '${{ steps.set-paths.outputs.poetry_lock_path }}' |
           egrep -o '([0-9]{1,}\.)+[0-9]{1,}'
         )" >> $GITHUB_ENV
 
@@ -46,11 +66,11 @@ runs:
       id: cache-python-venv
       uses: actions/cache@v3
       with:
-        path: .venv
+        path: ${{ steps.set-paths.outputs.venv_path }}
         key: >
           venv-${{ runner.os }}-${{ hashFiles(
-            '.python-version',
-            'poetry.lock'
+            steps.set-paths.outputs.python_version_path,
+            steps.set-paths.outputs.poetry_lock_path
           ) }}
 
     - name: Install python dependencies
