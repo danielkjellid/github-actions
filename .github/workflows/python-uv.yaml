@@ -80,8 +80,8 @@ jobs:
       # yamllint disable-line rule:line-length
       - name: Setup project
         uses: danielkjellid/github-actions/.github/actions/setup-python-uv@main
-        with:
-          working-directory: ${{ inputs.working-directory }}
+        # with:
+        #   working-directory: ${{ inputs.working-directory }}
       - name: Running ${{ inputs.cmd }}
         working-directory: ${{ inputs.working-directory }}
         shell: bash
