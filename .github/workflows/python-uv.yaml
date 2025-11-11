@@ -76,6 +76,7 @@ jobs:
       - name: Setup project
         uses: danielkjellid/github-actions/.github/actions/setup-python-uv@main
       - name: Running ${{ inputs.cmd }}
+        working-directory: ${{ inputs.working-directory }}
         shell: bash
         run: ${{ inputs.cmd }}
         env:
