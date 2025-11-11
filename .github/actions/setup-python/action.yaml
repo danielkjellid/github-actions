@@ -27,7 +27,7 @@ runs:
             "poetry_lock_path=${{ inputs.working-directory }}/poetry.lock" \
             >> $GITHUB_OUTPUT
           echo \
-            "python_version_path=${{ inputs.working-directory }}/.python-version" \
+            "python_version_path=${{ inputs.working-directory }}/.python-version" \ # yamllint disable-line
             >> $GITHUB_OUTPUT
           echo \
             "venv_path=${{ inputs.working-directory }}/.venv" \
