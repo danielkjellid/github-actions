@@ -2,8 +2,17 @@
 name: Setup python project with uv
 description: Setup python project and install dependencies
 
+inputs:
+  working-directory:
+    description: "Working directory to run the command in"
+    required: false
+    type: string
+
 runs:
   using: composite
+  defaults:
+    run:
+      working-directory: ${{ inputs.working-directory }}
   steps:
     - name: Setup python
       id: setup-python

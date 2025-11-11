@@ -33,6 +33,10 @@ on: # yamllint disable-line rule:truthy
         description: Command to run action with
         required: true
         type: string
+      working-directory:
+        description: Working directory to run the command in
+        required: false
+        type: string
 
 jobs:
   action:
