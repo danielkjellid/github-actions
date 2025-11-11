@@ -33,6 +33,10 @@ on: # yamllint disable-line rule:truthy
         description: Command to run action with
         required: true
         type: string
+      working-directory:
+        description: Working directory to run the command in
+        required: false
+        type: string
 
 jobs:
   action:
@@ -74,8 +78,12 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v3
       - name: Setup project
-        uses: danielkjellid/github-actions/.github/actions/setup-python-uv@main
+        uses: >
+          danielkjellid/github-actions/.github/actions/setup-python-uv@main
+        with:
+          working-directory: ${{ inputs.working-directory }}
       - name: Running ${{ inputs.cmd }}
+        working-directory: ${{ inputs.working-directory }}
         shell: bash
         run: ${{ inputs.cmd }}
         env:
