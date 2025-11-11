@@ -11,6 +11,7 @@ inputs:
 runs:
   using: composite
   steps:
+    # yamllint disable rule:line-length
     - name: Set file paths
       id: set-paths
       shell: bash
@@ -20,8 +21,8 @@ runs:
             "poetry_lock_path=${{ inputs.working-directory }}/poetry.lock" \
             >> $GITHUB_OUTPUT
           echo \
-            "python_version_path=${{ inputs.working-directory }}" \
-            "/.python-version" >> $GITHUB_OUTPUT
+            "python_version_path=${{ inputs.working-directory }}/.python-version" \
+            >> $GITHUB_OUTPUT
           echo \
             "venv_path=${{ inputs.working-directory }}/.venv" \
             >> $GITHUB_OUTPUT
@@ -30,7 +31,7 @@ runs:
           echo "python_version_path=.python-version" >> $GITHUB_OUTPUT
           echo "venv_path=.venv" >> $GITHUB_OUTPUT
         fi
-
+    # yamllint enable rule:line-length
     - name: Setup python
       id: setup-python
       uses: actions/setup-python@v4
